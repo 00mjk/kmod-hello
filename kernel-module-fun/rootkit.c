@@ -7,7 +7,7 @@
 #define MODULE_NAME "rootkit"
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Julia Evans");
+MODULE_AUTHOR("u2i");
 MODULE_DESCRIPTION("The tiniest rootkit");
 
 static struct file_operations handler_fops;
