@@ -1,8 +1,8 @@
 #include <linux/module.h>
 
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("u2ih1r05h1");
-MODULE_DESCRIPTION("*** Hello world u2i's kernel module ***");
+MODULE_AUTHOR("5p1n6a11");
+MODULE_DESCRIPTION("*** Hello world 5p1n6a11's kernel module ***");
 
 static int mykernelmodule_init(void) {
 	printk(KERN_ALERT "Hello World!!!!! part2\n");
