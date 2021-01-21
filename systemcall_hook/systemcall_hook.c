@@ -16,12 +16,12 @@ static struct kprobe kp = {
     .symbol_name = "kallsyms_lookup_name"
 };
 
-asmlinkage long (*orig_sys_uname)(struct old_utsname __user *name);
+asmlinkage long (*orig_sys_openat)(int dfd, const char __user *filename, int flags, umode_t mode);
 
 static void
 save_original_syscall_address(void)
 {
-    orig_sys_uname = syscall_table[__NR_uname];
+    orig_sys_openat = syscall_table[__NR_openat];
 }
 
 static void
@@ -46,16 +46,17 @@ replace_system_call(void *new)
     /* Need to set r/w to a page which syscall_tabel is in. */
     change_page_attr_to_rw(pte);
 
-    syscall_table[__NR_uname] = new;
+    syscall_table[__NR_openat] = new;
     /* set back to read only */
     change_page_attr_to_ro(pte);
 }
 
 asmlinkage long
-syscall_replace_sys_uname(struct old_utsname __user *name)
+syscall_replace_sys_openat(int dfd, const char __user *filename, int flags, umode_t mode)
 {
-    pr_info("call original uname system call\n");
-    return orig_sys_uname(name);
+    pr_info("call original openat system call\n");
+    pr_info("filename: %s\n", filename);
+    return orig_sys_openat(dfd, filename, flags, mode);
 }
 
 static int
@@ -71,11 +72,12 @@ syscall_replace_init(void)
     pr_info("sys_call_table address is 0x%px \n", syscall_table);
 
     save_original_syscall_address();
-    pr_info("original sys_uname's address is %px\n", orig_sys_uname);
+    pr_info("original sys_openat's address is %px\n", orig_sys_openat);
 
-    replace_system_call(syscall_replace_sys_uname);
+    replace_system_call(syscall_replace_sys_openat);
 
     pr_info("system call replaced\n");
+    pr_info("%d\n", __NR_openat);
     return 0;
 }
 
@@ -83,8 +85,8 @@ static void
 syscall_replace_cleanup(void)
 {
     pr_info("cleanup");
-    if (orig_sys_uname)
-        replace_system_call(orig_sys_uname);
+    if (orig_sys_openat)
+        replace_system_call(orig_sys_openat);
 }
 
 module_init(syscall_replace_init);
