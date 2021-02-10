@@ -11,7 +11,7 @@ static void **sys_call_table;
 static asmlinkage long my_openat(const struct pt_regs *regs)
 {
     char buffer[1024];
-    if (current->tgid != 251) {
+    if (current->tgid != 311) {
         printk("%s. proc:%s, pid:%d\n", __func__, current->group_leader->comm, current->tgid);
         strncpy_from_user(buffer, regs->si, sizeof buffer);
         printk("pathname: %s\n", buffer);
